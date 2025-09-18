@@ -11,7 +11,7 @@
             --color-background: #F4F4F5;
             --color-text: #333;
             --color-primary: #052e16; /* Darker Green */
-            --color-secondary: #A1A1AA;
+            --color-secondary: #71717A; /* WCAG AA compliant */
             --color-highlight: #D97706;
             --font-body: 'Lora', serif;
             --font-heading: 'Raleway', sans-serif;
@@ -194,15 +194,27 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
+            // --- Throttling function to limit how often a function can be called ---
+            const throttle = (func, limit) => {
+                let inThrottle;
+                return function() {
+                    const args = arguments;
+                    const context = this;
+                    if (!inThrottle) {
+                        func.apply(context, args);
+                        inThrottle = true;
+                        setTimeout(() => inThrottle = false, limit);
+                    }
+                };
+            };
+
             // --- Intersection Observer for revealing sections ---
             const sections = document.querySelectorAll('main section');
-
             const observerOptions = {
                 root: null,
                 rootMargin: '0px',
                 threshold: 0.1
             };
-
             const observer = new IntersectionObserver((entries, observer) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -211,20 +223,19 @@
                     }
                 });
             }, observerOptions);
-
             sections.forEach(section => {
                 observer.observe(section);
             });
 
             // --- SVG Path Animation on Scroll ---
             const hairpinPath = document.querySelector('#hairpin-path');
-            if (hairpinPath) {
-                const pathLength = hairpinPath.getTotalLength();
+            const ascentSection = document.querySelector('#ascent');
 
+            // Only set up animation if both elements exist
+            if (hairpinPath && ascentSection) {
+                const pathLength = hairpinPath.getTotalLength();
                 hairpinPath.style.strokeDasharray = pathLength;
                 hairpinPath.style.strokeDashoffset = pathLength;
-
-                const ascentSection = document.querySelector('#ascent');
 
                 const animatePath = () => {
                     const scrollPosition = window.scrollY;
@@ -232,17 +243,17 @@
                     const sectionHeight = ascentSection.offsetHeight;
                     const windowHeight = window.innerHeight;
 
-                    // Only run animation when the section is in view
+                    // Check if the section is roughly in the viewport
                     if (scrollPosition >= sectionTop - windowHeight && scrollPosition <= sectionTop + sectionHeight) {
                         let progress = (scrollPosition - (sectionTop - windowHeight / 2)) / (sectionHeight / 2);
                         progress = Math.max(0, Math.min(1, progress)); // Clamp between 0 and 1
-
                         const drawLength = pathLength * progress;
                         hairpinPath.style.strokeDashoffset = pathLength - drawLength;
                     }
                 };
 
-                window.addEventListener('scroll', animatePath);
+                // Listen to scroll events, but throttle the handler to avoid performance issues
+                window.addEventListener('scroll', throttle(animatePath, 50)); // Fire at most once every 50ms
             }
         });
     </script>
