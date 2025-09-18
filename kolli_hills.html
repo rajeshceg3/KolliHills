@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kolli Hills: A Whisper in the Treetops</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Raleway:ital,wght@0,100..900;1,100..900&display=swap');
+
+        :root {
+            --color-background: #F4F4F5;
+            --color-text: #333;
+            --color-primary: #052e16; /* Darker Green */
+            --color-secondary: #A1A1AA;
+            --color-highlight: #D97706;
+            --font-body: 'Lora', serif;
+            --font-heading: 'Raleway', sans-serif;
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background);
+            color: var(--color-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        header, main, footer {
+            width: 100%;
+            display: grid;
+            grid-template-columns: 1fr min(65ch, calc(100% - 2rem)) 1fr;
+            grid-column-gap: 1rem;
+        }
+
+        header > *, main > *, footer > * {
+            grid-column: 2;
+        }
+
+        /* Header Styling */
+        header {
+            text-align: center;
+            padding: 6rem 0 4rem;
+        }
+
+        header h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: var(--color-primary);
+            font-weight: 200; /* Thin Raleway */
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        header p {
+            font-family: var(--font-body);
+            font-style: italic;
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: var(--color-secondary);
+        }
+
+        /* Section Styling */
+        main section {
+            padding: 4rem 0;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 1s cubic-bezier(0.165, 0.84, 0.44, 1), transform 1s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        main section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(1.75rem, 3vw, 2.25rem);
+            color: var(--color-primary);
+            font-weight: 400;
+            margin-bottom: 2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--color-highlight);
+        }
+
+        p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+
+        /* Hairpin visual */
+        .hairpin-visual-container {
+            display: flex;
+            justify-content: center;
+            padding: 2rem 0;
+        }
+
+        #hairpin-path {
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            transition: stroke-dashoffset 2s ease-in-out;
+        }
+
+        /* Footer Styling */
+        footer {
+            text-align: center;
+            padding: 4rem 0 2rem;
+            font-style: italic;
+            color: var(--color-secondary);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                line-height: 1.6;
+            }
+            header {
+                padding: 4rem 0 2rem;
+            }
+            main section {
+                padding: 2rem 0;
+            }
+            p {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Kolli Hills</h1>
+        <p>A Whisper in the Treetops</p>
+    </header>
+
+    <main>
+        <section id="intro">
+            <h2>An Invitation</h2>
+            <p>There are places that shout their presence, and then there are those that whisper. Kolli Malai, the Hills of Kolli, is a whisper. Tucked away in the Eastern Ghats of Tamil Nadu, it doesn’t boast of grand resorts or bustling marketplaces. Its name, in some old tales, translates to ‘Mountain of Death’, a dramatic title for such a gentle place, perhaps meant to keep its quiet beauty a secret for a little longer. But for those who listen, it offers a different kind of story—a story of winding roads, of air so clean it feels like a memory, and of a stillness that sinks right into your bones. It invites you not for an adventure, but for a conversation with the clouds.</p>
+        </section>
+
+        <section id="ascent">
+            <h2>The Ascent</h2>
+            <p>The journey begins where the plains give way to the first rise of the earth. The road, a slender ribbon of tar, soon begins to dance. They say there are seventy hairpin bends on the way to the top of Kolli Hills. I did not count them. To count them would be to miss the point. Each turn is a revelation. The world below shrinks, the air grows cooler, and the scent of pepper and coffee from the plantations begins to drift through the window. With every bend, you leave a little bit of the world behind. The forest grows thicker, sunlight dapples through the leaves, and monkeys, the old gatekeepers of these hills, watch your slow, winding progress with a knowing calm. This is not a road to be conquered; it is a meditation in motion.</p>
+            <div class="hairpin-visual-container">
+                <svg width="60" height="150" viewBox="0 0 60 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                    <path id="hairpin-path" d="M 30 0 v 10 c 0 20 20 20 20 40 s -20 20 -20 40 v 50" stroke="var(--color-secondary)" stroke-width="2" fill="none" stroke-linecap="round"/>
+                </svg>
+            </div>
+        </section>
+
+        <section id="temple">
+            <h2>The Temple in the Clouds</h2>
+            <p>When the road finally straightens, you find yourself in a different world. The air is thin and sweet. Life here moves at the pace of the seasons. At the heart of this little world is the Arapaleeswarar Temple, an ancient stone structure that seems to have grown out of the very rock it stands on. It is a place of quiet faith, where the scent of incense mingles with the earthy smell of the forest. I sat by its old walls for a while, watching small children play in the courtyard, their laughter echoing in the vast silence of the hills. Here, time is not a clock that ticks, but a river that flows.</p>
+        </section>
+
+        <section id="waterfall">
+            <h2>A Silver Cascade</h2>
+            <p>From the temple, a staircase of a thousand steps, perhaps more, leads down into a valley. The sound grows as you descend—a low rumble at first, then a roar that fills the air. This is the song of the Agaya Gangai, the 'Ganges of the Sky'. And then you see it. A torrent of silver water, bursting from the rocks and plunging into a deep, green pool below. The spray is a cool baptism, washing away the weariness of the climb. To stand before it is to feel the raw, untamed power of nature. It is a sight that asks for nothing but your silent awe.</p>
+        </section>
+
+        <section id="viewpoint">
+            <h2>The View from the Edge</h2>
+            <p>There are several viewpoints in Kolli Hills, little clearings that look out over the world. From the Seekuparai viewpoint, the plains of Tamil Nadu stretch out like a patchwork quilt under a hazy sky. You can see the tiny squares of farms, the glint of distant rooftops, and the threads of roads connecting them all. It is a view that makes you feel both small and infinite. You stand at the edge of the world, a silent observer, with nothing but the wind for company. It is in these moments of quiet observation that the hills truly share their secrets.</p>
+        </section>
+
+        <section id="farewell">
+            <h2>A Lingering Farewell</h2>
+            <p>Leaving Kolli Hills is like waking from a pleasant dream. The descent through the seventy bends feels different—a gentle return to the world you left behind. But you do not leave empty-handed. You carry with you the coolness of the air, the sound of the waterfall, the memory of the view from the top. The hills have whispered their stories to you, and they will linger in your mind, a quiet reminder of a world that moves at its own gentle pace.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>Crafted with care.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Intersection Observer for revealing sections ---
+            const sections = document.querySelectorAll('main section');
+
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // --- SVG Path Animation on Scroll ---
+            const hairpinPath = document.querySelector('#hairpin-path');
+            if (hairpinPath) {
+                const pathLength = hairpinPath.getTotalLength();
+
+                hairpinPath.style.strokeDasharray = pathLength;
+                hairpinPath.style.strokeDashoffset = pathLength;
+
+                const ascentSection = document.querySelector('#ascent');
+
+                const animatePath = () => {
+                    const scrollPosition = window.scrollY;
+                    const sectionTop = ascentSection.offsetTop;
+                    const sectionHeight = ascentSection.offsetHeight;
+                    const windowHeight = window.innerHeight;
+
+                    // Only run animation when the section is in view
+                    if (scrollPosition >= sectionTop - windowHeight && scrollPosition <= sectionTop + sectionHeight) {
+                        let progress = (scrollPosition - (sectionTop - windowHeight / 2)) / (sectionHeight / 2);
+                        progress = Math.max(0, Math.min(1, progress)); // Clamp between 0 and 1
+
+                        const drawLength = pathLength * progress;
+                        hairpinPath.style.strokeDashoffset = pathLength - drawLength;
+                    }
+                };
+
+                window.addEventListener('scroll', animatePath);
+            }
+        });
+    </script>
+
+</body>
+</html>
