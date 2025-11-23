@@ -258,7 +258,10 @@
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
         }
-        window.addEventListener('resize', resize);
+        window.addEventListener('resize', () => {
+            resize();
+            particles.forEach(p => p.reset());
+        });
         resize();
 
         // --- Scroll Handling ---
