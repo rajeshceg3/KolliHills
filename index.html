@@ -65,6 +65,18 @@
             animation-delay: 0.8s;
         }
 
+        .hero-description {
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin-top: 1rem;
+            text-align: center;
+            font-weight: 300;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: heroReveal 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 1.1s;
+        }
+
         /* Layout */
         section {
             min-height: 100vh;
@@ -125,6 +137,46 @@
             margin-top: 1rem;
         }
 
+        .stats-grid {
+            display: flex;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 3rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+        }
+
+        .stat-value {
+            display: block;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .stat-sublabel {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .bends-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-top: 2rem;
+            color: #d1d1d6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .bends-quote {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 2rem;
+            font-style: italic;
+        }
+
         /* Glassmorphism Card */
         .glass-card {
             background: var(--glass-bg);
@@ -148,6 +200,39 @@
             font-size: 1.1rem;
             color: #d1d1d6;
             line-height: 1.6;
+        }
+
+        .temple-details {
+            margin-top: 1.5rem;
+            font-size: 1rem;
+            color: #a1a1a6;
+        }
+
+        .waterfall-text {
+            color: var(--text-secondary);
+            margin-top: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .waterfall-info-box {
+            max-width: 600px;
+            margin: 2rem auto 0;
+            text-align: left;
+            background: rgba(255,255,255,0.05);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .waterfall-info-item {
+            color: #d1d1d6;
+            margin-bottom: 1rem;
+        }
+
+        .waterfall-info-item:last-child {
+            margin-bottom: 0;
         }
 
         /* Animations */
@@ -202,7 +287,10 @@
     <!-- Hero Section -->
     <section id="hero">
         <h1 class="hero-text">Kolli Hills.</h1>
-        <p class="hero-sub">The curve, redefined.</p>
+        <p class="hero-sub">The curve, redefined. An untouched sanctuary in the Eastern Ghats.</p>
+        <p class="hero-description">
+            Ascend 1,300 meters into a realm where time slows and nature speaks.
+        </p>
         <div class="scroll-hint">Scroll to explore</div>
     </section>
 
@@ -211,8 +299,21 @@
         <div class="content-block">
             <span class="stat-number">70</span>
             <div class="stat-label">Hairpin Bends</div>
-            <p class="bends-description">
-                A continuous, unbroken ribbon of asphalt. Engineered not just for transit, but for the rhythmic elevation of the soul.
+            <p class="bends-text">
+                Spanning 46.7 kilometers of adrenaline and awe. From the foothills of Karavalli to the heights of Solakkadu, the road is a continuous, unbroken ribbon of asphalt.
+            </p>
+            <div class="stats-grid">
+                <div>
+                    <span class="stat-value">46.7 km</span>
+                    <span class="stat-sublabel">Length</span>
+                </div>
+                <div>
+                    <span class="stat-value">1,100 m</span>
+                    <span class="stat-sublabel">Elevation Gain</span>
+                </div>
+            </div>
+            <p class="bends-quote">
+                Engineered not just for transit, but for the rhythmic elevation of the soul.
             </p>
         </div>
     </section>
@@ -226,6 +327,11 @@
                 The Arapaleeswarar Temple isn't just a structure; it's a testament to permanence.
                 Deeply rooted in the 1st century, yet feeling completely timeless.
             </p>
+            <p class="temple-details">
+                Built by Valvil Ori, a legendary archer and philanthropist, and dedicated to Lord Shiva.
+                The Dravidian architecture bears inscriptions from the Chola period, standing as a silent witness to centuries of devotion.
+                Local legend whispers of a secret path connecting this sanctuary directly to the Rasipuram temple.
+            </p>
         </div>
     </section>
 
@@ -234,15 +340,24 @@
         <div class="content-block">
             <h2 class="hero-text" style="font-size: 4rem;">Agaya Gangai</h2>
             <p class="hero-sub">The Ganges of the Sky.</p>
-            <p style="color: var(--text-secondary); margin-top: 2rem; max-width: 600px;">
+            <p class="waterfall-text">
                 Raw power, descending 300 feet. We stripped away the unnecessary, leaving only the water, the gravity, and the sound.
             </p>
+            <div class="waterfall-info-box">
+                <p class="waterfall-info-item">
+                    <strong>The Descent:</strong> Accessible only by a pilgrimage of 1,050 steep steps. A challenge for the body, a reward for the spirit.
+                </p>
+                <p class="waterfall-info-item">
+                    <strong>The Water:</strong> Cascading through rich herbal forests, the water is believed to possess medicinal properties before it crashes into the sacred pool below.
+                </p>
+            </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer id="footer" style="min-height: 50vh;">
         <p style="color: var(--text-secondary); font-size: 0.9rem;">Designed in California. Experienced in Tamil Nadu.</p>
+        <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 0.5rem;">Elevation: 1,300m | Location: Namakkal District</p>
         <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 1rem;">Kolli Hills © 2024</p>
     </footer>
 
