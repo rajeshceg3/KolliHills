@@ -274,6 +274,18 @@
             60% {transform: translateX(-50%) translateY(-5px);}
         }
 
+        .text-gradient-green {
+            background: linear-gradient(180deg, #a8e063 0%, #56ab2f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-gradient-blue {
+            background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
     </style>
 </head>
 <body>
@@ -285,7 +297,7 @@
     </div>
 
     <!-- Hero Section -->
-    <section id="hero">
+    <section id="hero" data-mode="hero">
         <h1 class="hero-text">Kolli Hills.</h1>
         <p class="hero-sub">The curve, redefined. An untouched sanctuary in the Eastern Ghats.</p>
         <p class="hero-description">
@@ -295,7 +307,7 @@
     </section>
 
     <!-- The Bends -->
-    <section id="bends">
+    <section id="bends" data-mode="bends">
         <div class="content-block">
             <span class="stat-number">70</span>
             <div class="stat-label">Hairpin Bends</div>
@@ -319,7 +331,7 @@
     </section>
 
     <!-- The Temple -->
-    <section id="temple">
+    <section id="temple" data-mode="temple">
         <div class="content-block glass-card">
             <h2>Arapaleeswarar</h2>
             <p>
@@ -335,8 +347,24 @@
         </div>
     </section>
 
+    <!-- Siddhar Caves -->
+    <section id="caves" data-mode="caves">
+        <div class="content-block glass-card">
+            <h2>Siddhar Caves</h2>
+            <p>
+                An age-old home for ascetics, the Siddhar Caves are sacred and serene.
+                It is said that sages lived here, growing medicinal herbs and practicing ancient healing arts.
+                The silence here is not empty; it is full of history.
+            </p>
+            <p class="temple-details">
+                Accessible to only the most determined, these small caves are believed to be connected by underground networks.
+                Surrounded by medicinal groves, the air itself feels curative.
+            </p>
+        </div>
+    </section>
+
     <!-- The Waterfall -->
-    <section id="waterfall">
+    <section id="waterfall" data-mode="waterfall">
         <div class="content-block">
             <h2 class="hero-text" style="font-size: 4rem;">Agaya Gangai</h2>
             <p class="hero-sub">The Ganges of the Sky.</p>
@@ -351,6 +379,63 @@
                     <strong>The Water:</strong> Cascading through rich herbal forests, the water is believed to possess medicinal properties before it crashes into the sacred pool below.
                 </p>
             </div>
+        </div>
+    </section>
+
+    <!-- Tampcol Medicinal Farm -->
+    <section id="farm" data-mode="farm">
+        <div class="content-block">
+             <h2 class="hero-text text-gradient-green">TAMPCOL Farm</h2>
+             <p class="hero-sub">Healing from the earth.</p>
+             <p class="bends-text">
+                Run by the Tamil Nadu Medical Plant Farms & Herbal Medicine Corporation.
+                This isn't just a farm; it's a living library of Ayurveda.
+             </p>
+        </div>
+    </section>
+
+    <!-- Botanical Garden -->
+    <section id="garden" data-mode="garden">
+        <div class="content-block glass-card">
+            <h2>Botanical Garden</h2>
+            <p>
+                A vibrant contrast to the rugged hills. The Botanical Garden features a magnificent Rose Garden,
+                eco-friendly cottages, and a viewpoint that offers a panoramic vista of the surrounding valleys.
+            </p>
+            <div class="stats-grid">
+                 <div>
+                    <span class="stat-value">Rose</span>
+                    <span class="stat-sublabel">Garden</span>
+                </div>
+                <div>
+                    <span class="stat-value">Eco</span>
+                    <span class="stat-sublabel">Park</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vasalurpatty Boat House -->
+    <section id="boathouse" data-mode="boathouse">
+        <div class="content-block">
+            <h2 class="hero-text text-gradient-blue">Vasalurpatty</h2>
+            <div class="stat-label">Boat House</div>
+            <p class="bends-text">
+                An artificial lake created to capture the tranquility of the hills.
+                Boating here offers a unique perspective of the landscape, surrounded by a lush green island park.
+            </p>
+        </div>
+    </section>
+
+    <!-- Selur View Point -->
+    <section id="viewpoint" data-mode="viewpoint">
+        <div class="content-block">
+            <span class="stat-number">View</span>
+            <div class="stat-label">Selur Point</div>
+            <p class="bends-text">
+                One of the highest points in the hills. The clouds don't just float above you; they pass through you.
+                A place to witness the sheer scale of the Eastern Ghats.
+            </p>
         </div>
     </section>
 
@@ -403,6 +488,28 @@
         }
         checkVisibility(); // Initial check
 
+        // --- Animation Mode Detection ---
+        let currentMode = 'hero';
+        const sections = document.querySelectorAll('section[data-mode]');
+
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.5 // Trigger when 50% of the section is visible
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    currentMode = entry.target.dataset.mode;
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
         // --- Visuals: The Road & Particles ---
 
         class Particle {
@@ -418,28 +525,68 @@
                 this.opacity = Math.random() * 0.5;
             }
 
-            update(isWaterfall) {
-                if (isWaterfall) {
+            update(mode) {
+                if (mode === 'waterfall') {
                     this.y += this.speed * 5;
                     this.x += (Math.random() - 0.5); // jitter
-                } else {
-                    this.y -= this.speed * 0.2; // slow rise
-                }
+                    if (this.y > height) {
+                        this.y = 0;
+                        this.x = Math.random() * width;
+                    }
+                } else if (mode === 'caves') {
+                    // Slow float, firefly like
+                    this.x += (Math.random() - 0.5) * 2;
+                    this.y += (Math.random() - 0.5) * 2;
 
-                if (this.y > height) {
-                    this.y = 0;
-                    this.x = Math.random() * width;
-                }
-                if (this.y < 0) {
-                    this.y = height;
+                    if (this.x < 0) this.x = width;
+                    if (this.x > width) this.x = 0;
+                    if (this.y < 0) this.y = height;
+                    if (this.y > height) this.y = 0;
+                } else if (mode === 'farm' || mode === 'garden') {
+                    // Gentle falling leaves/pollen
+                    this.y += this.speed * 0.5;
+                    this.x += Math.sin(this.y * 0.01) * 2;
+                    if (this.y > height) {
+                        this.y = 0;
+                        this.x = Math.random() * width;
+                    }
+                } else if (mode === 'boathouse') {
+                    // Wave motion / Horizontal flow
+                    this.x += this.speed;
+                    this.y += Math.sin(this.x * 0.05) * 0.5;
+                    if (this.x > width) {
+                        this.x = 0;
+                        this.y = Math.random() * height;
+                    }
+                } else if (mode === 'viewpoint') {
+                    // Clouds - slow horizontal
+                    this.x -= this.speed * 0.5;
+                    if (this.x < 0) {
+                        this.x = width;
+                        this.y = Math.random() * height;
+                    }
+                } else {
+                    // Default/Hero/Temple: Slow rise
+                    this.y -= this.speed * 0.2;
+                    if (this.y < 0) {
+                        this.y = height;
+                        this.x = Math.random() * width;
+                    }
                 }
             }
 
-            draw(ctx, isWaterfall) {
-                ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
+            draw(ctx, mode) {
+                let color = `rgba(255, 255, 255, ${this.opacity})`;
+                if (mode === 'caves') color = `rgba(255, 200, 100, ${this.opacity})`; // Warm/Fire
+                if (mode === 'farm' || mode === 'garden') color = `rgba(150, 255, 150, ${this.opacity})`; // Greenish
+                if (mode === 'boathouse') color = `rgba(100, 200, 255, ${this.opacity})`; // Blueish
+
+                ctx.fillStyle = color;
                 ctx.beginPath();
-                if (isWaterfall) {
+                if (mode === 'waterfall') {
                     ctx.rect(this.x, this.y, 1, this.speed * 10);
+                } else if (mode === 'caves') {
+                    ctx.arc(this.x, this.y, this.size * 1.5, 0, Math.PI * 2);
                 } else {
                     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
                 }
@@ -496,41 +643,24 @@
         function animate() {
             ctx.clearRect(0, 0, width, height);
 
-            // Determine which "mode" we are in based on scroll
-            // 0 - 0.3: Hero/Intro (Subtle rise)
-            // 0.3 - 0.6: Bends (Curve visualization)
-            // 0.6 - 0.8: Temple (Stillness)
-            // 0.8 - 1.0: Waterfall (Rain/Fall)
-
-            if (scrollPercent < 0.3) {
-                // Subtle particles rising
-                particles.forEach(p => {
-                    p.update(false);
-                    p.draw(ctx, false);
-                });
-            } else if (scrollPercent < 0.6) {
-                // The curve
+            if (currentMode === 'bends') {
                 drawCurve(ctx, scrollPercent);
-            } else if (scrollPercent < 0.8) {
-                // Temple - maybe draw a simple geometric shape or just stillness (fewer particles)
-                 particles.forEach((p, i) => {
-                    if (i < 20) { // fewer particles
-                        p.update(false);
-                        p.draw(ctx, false);
-                    }
-                });
-                // Draw a circle for the temple
-                ctx.beginPath();
-                ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-                ctx.lineWidth = 1;
-                ctx.arc(width/2, height/2, 150, 0, Math.PI*2);
-                ctx.stroke();
             } else {
-                // Waterfall
-                particles.forEach(p => {
-                    p.update(true);
-                    p.draw(ctx, true);
+                particles.forEach((p, i) => {
+                    // For temple, limit particle count
+                    if (currentMode === 'temple' && i >= 20) return;
+
+                    p.update(currentMode);
+                    p.draw(ctx, currentMode);
                 });
+
+                if (currentMode === 'temple') {
+                    ctx.beginPath();
+                    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                    ctx.lineWidth = 1;
+                    ctx.arc(width/2, height/2, 150, 0, Math.PI*2);
+                    ctx.stroke();
+                }
             }
 
             requestAnimationFrame(animate);
