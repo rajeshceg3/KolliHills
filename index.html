@@ -15,10 +15,11 @@
             --accent-gold: #D4AF37;
             --accent-blue: #5D8AA8;
             --accent-green: #4E6E5D;
-            --glass-bg: rgba(20, 20, 22, 0.7);
+            --glass-bg: rgba(20, 20, 22, 0.65);
             --glass-border: rgba(255, 255, 255, 0.08);
-            --card-radius: 24px;
+            --card-radius: 32px;
             --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --cursor-size: 20px;
         }
 
         *, *::before, *::after {
@@ -35,7 +36,8 @@
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             width: 100vw;
-            line-height: 1.6;
+            line-height: 1.7;
+            text-rendering: optimizeLegibility;
         }
 
         /* Noise Texture for Film Grain Feel */
@@ -227,15 +229,30 @@
         /* Refined Glassmorphism */
         .glass-card {
             background: var(--glass-bg);
-            backdrop-filter: blur(40px) saturate(180%);
-            -webkit-backdrop-filter: blur(40px) saturate(180%);
-            border: 1px solid var(--glass-border);
-            padding: clamp(2rem, 5vw, 4rem);
+            backdrop-filter: blur(50px) saturate(180%);
+            -webkit-backdrop-filter: blur(50px) saturate(180%);
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: clamp(2.5rem, 6vw, 4.5rem);
             border-radius: var(--card-radius);
-            box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 0 1px rgba(255,255,255,0.05);
+            box-shadow:
+                0 40px 100px rgba(0,0,0,0.6),
+                inset 0 0 0 1px rgba(255,255,255,0.05),
+                inset 0 2px 20px rgba(255,255,255,0.02);
             text-align: left;
             position: relative;
             overflow: hidden;
+            transition: transform 0.4s var(--ease-out-expo), box-shadow 0.4s var(--ease-out-expo);
+        }
+
+        /* Noise overlay inside card */
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            opacity: 0.04;
+            pointer-events: none;
+            mix-blend-mode: overlay;
         }
 
         /* Glossy shine effect on cards */
@@ -246,7 +263,8 @@
             left: 0;
             right: 0;
             height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            z-index: 2;
         }
 
         .glass-card h2 {
@@ -468,134 +486,285 @@
         /* --- Responsive Optimization --- */
 
         /* Mobile Optimization */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none; /* JS will toggle this */
+        @media (max-width: 1023px) {
+            .desktop-nav { display: none; }
+            .cursor, .cursor-follower { display: none; }
+
+            /* FAB Navigation */
+            .mobile-nav {
                 position: fixed;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100vh;
-                background: rgba(5,5,5,0.95);
+                bottom: 2rem;
+                right: 2rem;
+                z-index: 2000;
+            }
+
+            .fab-menu-toggle {
+                width: 60px; height: 60px;
+                border-radius: 50%;
+                background: #fff;
+                border: none;
+                box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                cursor: pointer;
+                transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            }
+
+            .fab-menu-toggle:active { transform: scale(0.9); }
+
+            .fab-icon {
+                width: 24px; height: 2px;
+                background: #000;
+                position: relative;
+                transition: background 0.3s;
+            }
+            .fab-icon::before, .fab-icon::after {
+                content: '';
+                position: absolute;
+                left: 0; width: 100%; height: 100%;
+                background: #000;
+                transition: transform 0.3s;
+            }
+            .fab-icon::before { transform: translateY(-8px); }
+            .fab-icon::after { transform: translateY(8px); }
+
+            /* Full Screen Overlay */
+            .mobile-menu-overlay {
+                position: fixed;
+                top: 0; left: 0; width: 100vw; height: 100vh;
+                background: rgba(5,5,5,0.98);
+                backdrop-filter: blur(20px);
+                z-index: 1999;
+                display: flex;
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.4s ease;
+            }
+
+            .mobile-menu-overlay.active {
+                opacity: 1;
+                pointer-events: auto;
+            }
+
+            .mobile-links {
+                display: flex;
+                flex-direction: column;
                 gap: 2rem;
-                z-index: 999;
+                text-align: center;
             }
 
-            .nav-links.active {
-                display: flex;
+            .mobile-links a {
+                font-family: 'Cinzel', serif;
+                font-size: 2.5rem;
+                color: #fff;
+                text-decoration: none;
+                opacity: 0;
+                transform: translateY(20px);
+                transition: opacity 0.4s ease, transform 0.4s ease;
             }
 
-            .nav-links a {
-                font-size: 1.5rem;
+            .mobile-menu-overlay.active .mobile-links a {
+                opacity: 1;
+                transform: translateY(0);
             }
 
-            .mobile-menu-toggle {
-                display: flex;
-                z-index: 1001;
+            .mobile-menu-overlay.active .mobile-links a:nth-child(1) { transition-delay: 0.1s; }
+            .mobile-menu-overlay.active .mobile-links a:nth-child(2) { transition-delay: 0.15s; }
+            .mobile-menu-overlay.active .mobile-links a:nth-child(3) { transition-delay: 0.2s; }
+            .mobile-menu-overlay.active .mobile-links a:nth-child(4) { transition-delay: 0.25s; }
+            .mobile-menu-overlay.active .mobile-links a:nth-child(5) { transition-delay: 0.3s; }
+            .mobile-menu-overlay.active .mobile-links a:nth-child(6) { transition-delay: 0.35s; }
+
+            .fab-close {
+                position: absolute;
+                bottom: 2rem;
+                right: 2rem;
+                background: none;
+                border: 1px solid rgba(255,255,255,0.2);
+                color: #fff;
+                width: 60px; height: 60px;
+                border-radius: 50%;
+                font-size: 2rem;
+                cursor: pointer;
             }
 
-            section {
-                padding: 4rem 1.5rem;
-            }
-
-            .glass-card {
-                padding: 2rem;
-            }
-
-            .stat-number {
-                font-size: 5rem;
-            }
-
-            .hero-text {
-                font-size: 3rem;
-            }
+            /* Layout Tweaks */
+            section { padding: 6rem 1.5rem; }
+            .glass-card { padding: 2rem; border-radius: 24px; }
+            .hero-text { font-size: 3.5rem; }
+            .stat-number { font-size: 4rem; }
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
         }
 
         /* Desktop Optimization */
         @media (min-width: 1024px) {
-            /* Side-by-Side Layouts for specific sections */
+            .mobile-nav { display: none; }
+
+            html, body {
+                cursor: none;
+            }
+
+            /* Cursor */
+            .cursor, .cursor-follower {
+                display: block;
+                position: fixed;
+                top: 0; left: 0;
+                pointer-events: none;
+                border-radius: 50%;
+                transform: translate(-50%, -50%);
+                z-index: 9999;
+            }
+            .cursor {
+                width: var(--cursor-size); height: var(--cursor-size);
+                background: #fff;
+                mix-blend-mode: difference;
+                transition: width 0.3s, height 0.3s, background 0.3s;
+            }
+            .cursor-follower {
+                width: 50px; height: 50px;
+                border: 1px solid rgba(255,255,255,0.2);
+                transition: transform 0.1s cubic-bezier(0.1, 1, 0.3, 1), background 0.3s, border-color 0.3s;
+            }
+            .cursor.active { width: 10px; height: 10px; }
+            .cursor-follower.active {
+                transform: translate(-50%, -50%) scale(1.5);
+                background: rgba(255,255,255,0.03);
+                border-color: rgba(255,255,255,0.05);
+            }
+
+            /* Navigation Pill */
+            .desktop-nav {
+                position: fixed;
+                top: 2rem;
+                left: 0;
+                width: 100%;
+                display: flex;
+                justify-content: center;
+                z-index: 1000;
+                pointer-events: none;
+                transition: top 0.3s ease;
+            }
+
+            .nav-pill {
+                pointer-events: auto;
+                background: rgba(20, 20, 22, 0.4);
+                backdrop-filter: blur(15px) saturate(180%);
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                padding: 0.8rem 2.5rem;
+                border-radius: 100px;
+                display: flex;
+                align-items: center;
+                gap: 4rem;
+                box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+                transition: all 0.4s var(--ease-out-expo);
+            }
+
+            .nav-pill:hover {
+                background: rgba(20, 20, 22, 0.6);
+                box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+                border-color: rgba(255,255,255,0.15);
+            }
+
+            .nav-logo { font-size: 1.1rem; }
+            .nav-links a { font-size: 0.8rem; font-weight: 500; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease; }
+            .nav-links a:hover { opacity: 1; }
+            .nav-links a::after { bottom: -8px; }
+
+            /* Asymmetric & Grid Layouts */
             #bends .content-block,
             #waterfall .content-block,
             #farm .content-block,
-            #boathouse .content-block {
+            #boathouse .content-block,
+            #garden .content-block,
+            #caves .content-block {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 4rem;
+                grid-template-columns: 0.8fr 1.2fr;
+                gap: 5rem;
                 text-align: left;
-                align-items: center;
-                max-width: 1200px;
+                align-items: start;
+                max-width: 1300px;
             }
 
-            /* Specific tweaks for grid items */
+            #caves .content-block { grid-template-columns: 1.2fr 0.8fr; }
+            #caves .content-block h2 { grid-column: 1; }
+            #caves .content-block p:first-of-type { grid-column: 1; }
+            #caves .temple-details { grid-column: 2; grid-row: 1 / span 3; margin-top: 5rem; }
+
             .content-block > .stat-number,
             .content-block > .stat-label {
-                grid-column: 1 / -1; /* Header spans full width */
+                grid-column: 1 / -1;
                 text-align: center;
+                margin-bottom: 4rem;
             }
 
-            /* Align stats grid to the right or bottom depending on content */
             #bends .stats-grid {
-                grid-column: 2;
+                grid-column: 1;
                 grid-row: 2;
-                margin-top: 0;
-                border-top: none;
-                border-left: 1px solid var(--glass-border);
-                padding-left: 2rem;
-                padding-top: 0;
                 display: flex;
                 flex-direction: column;
-                gap: 3rem;
+                gap: 2rem;
+                border-left: none;
+                border-right: 1px solid rgba(255,255,255,0.1);
+                padding-right: 2rem;
+                border-top: none;
             }
 
-            #bends .bends-text {
-                grid-column: 1;
-                grid-row: 2;
-                margin-top: 0;
-            }
+            #bends .bends-text { grid-column: 2; grid-row: 2; margin: 0; }
 
-            /* Waterfall Layout */
-            #waterfall .waterfall-text {
-                grid-column: 1;
-            }
-            #waterfall .waterfall-info-box {
-                grid-column: 2;
-                margin-top: 0;
-            }
-            #waterfall .stats-grid {
-                grid-column: 1 / -1;
-                margin-bottom: 3rem;
-            }
+            /* Waterfall specific */
+            #waterfall .content-block { align-items: center; }
+            #waterfall .waterfall-text { grid-column: 1; font-size: 1.2rem; }
+            #waterfall .waterfall-info-box { grid-column: 2; margin-top: 0; backdrop-filter: blur(10px); }
+            #waterfall .stats-grid { grid-column: 1 / -1; margin-bottom: 3rem; justify-content: center; display: flex; gap: 5rem; border-top: none; }
 
-            /* Farm Layout */
-            #farm .bends-text {
-                 grid-column: 1 / -1;
-                 display: grid;
-                 grid-template-columns: 1fr 1fr;
-                 gap: 4rem;
+            /* Glass Card Interactions */
+            .glass-card:hover {
+                transform: translateY(-5px) scale(1.005);
+                box-shadow: 0 50px 120px rgba(0,0,0,0.7), inset 0 0 0 1px rgba(255,255,255,0.15);
             }
         }
 
     </style>
 </head>
 <body>
+    <div class="cursor"></div>
+    <div class="cursor-follower"></div>
 
     <div class="progress-bar" id="progressBar"></div>
 
-    <nav class="main-nav">
-        <div class="nav-logo">Kolli Hills</div>
-        <div class="nav-links">
-            <a href="#bends">Bends</a>
-            <a href="#temple">Temple</a>
-            <a href="#waterfall">Falls</a>
-            <a href="#farm">Farm</a>
-            <a href="#viewpoint">View</a>
+    <!-- Desktop Navigation (Pill) -->
+    <nav class="desktop-nav">
+        <div class="nav-pill">
+            <div class="nav-logo">Kolli Hills</div>
+            <div class="nav-links">
+                <a href="#bends" class="magnetic">Bends</a>
+                <a href="#temple" class="magnetic">Temple</a>
+                <a href="#waterfall" class="magnetic">Falls</a>
+                <a href="#farm" class="magnetic">Farm</a>
+                <a href="#viewpoint" class="magnetic">View</a>
+            </div>
         </div>
-        <div class="mobile-menu-toggle">
-            <span></span>
-            <span></span>
+    </nav>
+
+    <!-- Mobile Navigation (FAB) -->
+    <nav class="mobile-nav">
+        <button class="fab-menu-toggle" aria-label="Menu">
+             <span class="fab-icon"></span>
+        </button>
+        <div class="mobile-menu-overlay">
+            <div class="mobile-links">
+                <a href="#hero">Home</a>
+                <a href="#bends">The Bends</a>
+                <a href="#temple">Temple</a>
+                <a href="#waterfall">Falls</a>
+                <a href="#farm">Farm</a>
+                <a href="#viewpoint">View</a>
+            </div>
+             <button class="fab-close" aria-label="Close">×</button>
         </div>
     </nav>
 
@@ -1089,40 +1258,113 @@
         <p style="color: var(--text-secondary); font-size: 0.8rem; margin-top: 1rem;">Kolli Hills © 2024. Preserving Nature's Heritage.</p>
     </footer>
 
+    <script src="https://unpkg.com/@studio-freight/lenis@1.0.29/dist/lenis.min.js"></script>
     <script>
-        // Back to Top
-        document.getElementById('backToTop').addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+        // --- Smooth Scroll (Lenis) ---
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
         });
 
-        // --- Navigation Logic ---
-        const nav = document.querySelector('.main-nav');
-        const mobileToggle = document.querySelector('.mobile-menu-toggle');
-        const navLinks = document.querySelector('.nav-links');
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
 
-        mobileToggle.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            mobileToggle.classList.toggle('active');
-            // Animate hamburger to X
-            const spans = mobileToggle.querySelectorAll('span');
-            if (navLinks.classList.contains('active')) {
-                spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)';
-                spans[1].style.transform = 'rotate(-45deg) translate(1px, -1px)';
-            } else {
-                spans[0].style.transform = 'none';
-                spans[1].style.transform = 'none';
+        // Back to Top
+        document.getElementById('backToTop').addEventListener('click', () => {
+            lenis.scrollTo(0);
+        });
+
+        // --- Desktop Cursor ---
+        const cursor = document.querySelector('.cursor');
+        const follower = document.querySelector('.cursor-follower');
+        let mouseX = 0, mouseY = 0, posX = 0, posY = 0;
+
+        document.addEventListener('mousemove', (e) => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            if(cursor) {
+                cursor.style.left = mouseX + 'px';
+                cursor.style.top = mouseY + 'px';
             }
         });
 
-        // Close mobile menu on link click
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                const spans = mobileToggle.querySelectorAll('span');
-                spans[0].style.transform = 'none';
-                spans[1].style.transform = 'none';
+        function updateCursor() {
+            if(follower) {
+                posX += (mouseX - posX) / 9;
+                posY += (mouseY - posY) / 9;
+                follower.style.left = posX + 'px';
+                follower.style.top = posY + 'px';
+            }
+            requestAnimationFrame(updateCursor);
+        }
+        updateCursor();
+
+        // Magnetic Button Effect
+        if (window.innerWidth > 1024) {
+            const magneticBtns = document.querySelectorAll('.magnetic');
+            magneticBtns.forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+                    btn.style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+                    btn.style.display = 'inline-block'; // Ensure transform works
+                });
+
+                btn.addEventListener('mouseleave', () => {
+                    btn.style.transform = 'translate(0, 0)';
+                });
+            });
+        }
+
+        const interactiveElements = document.querySelectorAll('a, button, .glass-card, .nav-pill');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                if(cursor) cursor.classList.add('active');
+                if(follower) follower.classList.add('active');
+            });
+            el.addEventListener('mouseleave', () => {
+                if(cursor) cursor.classList.remove('active');
+                if(follower) follower.classList.remove('active');
             });
         });
+
+        // --- Mobile Navigation (FAB) ---
+        const fabToggle = document.querySelector('.fab-menu-toggle');
+        const fabClose = document.querySelector('.fab-close');
+        const mobileOverlay = document.querySelector('.mobile-menu-overlay');
+        const mobileLinks = document.querySelectorAll('.mobile-links a');
+
+        function toggleMenu() {
+            mobileOverlay.classList.toggle('active');
+            const icon = document.querySelector('.fab-icon');
+            if(icon) {
+                if(mobileOverlay.classList.contains('active')) {
+                    icon.style.background = 'transparent';
+                } else {
+                    icon.style.background = '#000';
+                }
+            }
+        }
+
+        if(fabToggle) {
+            fabToggle.addEventListener('click', toggleMenu);
+            if(fabClose) fabClose.addEventListener('click', toggleMenu);
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    toggleMenu();
+                });
+            });
+        }
 
         // --- Canvas Setup ---
         const canvas = document.getElementById('mainCanvas');
@@ -1141,20 +1383,22 @@
         });
         resize();
 
-        // --- Scroll Handling ---
-        window.addEventListener('scroll', () => {
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollTop = window.scrollY;
-            scrollPercent = scrollTop / docHeight;
+        // --- Scroll Handling (Linked to Lenis) ---
+        const desktopNav = document.querySelector('.desktop-nav');
+        let lastScroll = 0;
+
+        lenis.on('scroll', ({ scroll, limit, velocity, direction, progress }) => {
+            scrollPercent = progress; // Update global var for canvas
 
             document.getElementById('progressBar').style.width = (scrollPercent * 100) + '%';
 
-            // Navbar glass effect
-            if (scrollTop > 50) {
-                nav.classList.add('scrolled');
+            // Nav Hide/Show
+            if (scroll > lastScroll && scroll > 100) {
+                if(desktopNav) desktopNav.style.top = '-100px';
             } else {
-                nav.classList.remove('scrolled');
+                if(desktopNav) desktopNav.style.top = '2rem';
             }
+            lastScroll = scroll;
 
             checkVisibility();
         });
@@ -1293,7 +1537,8 @@
             }
         }
 
-        const particles = Array.from({ length: 120 }, () => new Particle());
+        const particleCount = window.innerWidth < 1024 ? 50 : 120;
+        const particles = Array.from({ length: particleCount }, () => new Particle());
 
         // --- 3D-ish Road Generator for Bends ---
         function drawRoad(ctx, progress) {
@@ -1333,6 +1578,30 @@
                 }
                 ctx.stroke();
             }
+        }
+
+        // --- 3D Tilt for Glass Cards (Desktop) ---
+        if (window.innerWidth > 1024) {
+            const cards = document.querySelectorAll('.glass-card');
+            cards.forEach(card => {
+                card.addEventListener('mousemove', (e) => {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+
+                    const rotateX = ((y - centerY) / centerY) * -4; // Max 4 deg
+                    const rotateY = ((x - centerX) / centerX) * 4;
+
+                    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+                });
+            });
         }
 
         function animate() {
