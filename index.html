@@ -10,13 +10,13 @@
     <style>
         :root {
             --bg-color: #050505;
-            --text-primary: #e1e1e3;
-            --text-secondary: #a1a1a6;
+            --text-primary: #ededef;
+            --text-secondary: #b0b0b8; /* Improved contrast */
             --accent-gold: #D4AF37;
             --accent-blue: #5D8AA8;
             --accent-green: #4E6E5D;
-            --glass-bg: rgba(20, 20, 22, 0.65);
-            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-bg: rgba(22, 22, 24, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
             --card-radius: 32px;
             --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
             --cursor-size: 20px;
@@ -30,13 +30,19 @@
             -moz-osx-font-smoothing: grayscale;
         }
 
+        ::selection {
+            background: rgba(212, 175, 55, 0.3);
+            color: #fff;
+        }
+
         body {
             background-color: var(--bg-color);
             color: var(--text-primary);
             font-family: 'Inter', sans-serif;
             overflow-x: hidden;
             width: 100vw;
-            line-height: 1.7;
+            line-height: 1.8; /* Improved readability */
+            font-weight: 400;
             text-rendering: optimizeLegibility;
         }
 
@@ -57,23 +63,24 @@
         /* Typography */
         h1, h2, h3 {
             font-family: 'Cinzel', serif;
-            font-weight: 500;
-            letter-spacing: 0.02em;
+            font-weight: 600; /* Slightly bolder for presence */
+            letter-spacing: 0.04em;
         }
 
         p {
             font-family: 'Inter', sans-serif;
-            font-weight: 300;
+            font-weight: 400; /* Better legibility than 300 */
             letter-spacing: 0.01em;
+            opacity: 0.95;
         }
 
         .hero-text {
             font-family: 'Cinzel', serif;
             font-size: clamp(3.5rem, 10vw, 8rem);
-            font-weight: 400;
+            font-weight: 500;
             line-height: 1.1;
             letter-spacing: 0.02em;
-            background: linear-gradient(180deg, #fff 20%, #888 100%);
+            background: linear-gradient(180deg, #fff 30%, #999 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             opacity: 0;
@@ -81,6 +88,7 @@
             animation: heroReveal 1.8s var(--ease-out-expo) forwards;
             animation-delay: 0.3s;
             text-transform: uppercase;
+            text-shadow: 0 10px 30px rgba(0,0,0,0.5); /* Subtle depth */
         }
 
         .hero-sub {
@@ -228,16 +236,24 @@
 
         /* Refined Glassmorphism */
         .glass-card {
-            background: var(--glass-bg);
+            /* Dynamic background for glare effect */
+            background:
+                radial-gradient(
+                    800px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                    rgba(255,255,255,0.06),
+                    transparent 40%
+                ),
+                var(--glass-bg);
+
             backdrop-filter: blur(50px) saturate(180%);
             -webkit-backdrop-filter: blur(50px) saturate(180%);
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.08);
             padding: clamp(2.5rem, 6vw, 4.5rem);
             border-radius: var(--card-radius);
             box-shadow:
                 0 40px 100px rgba(0,0,0,0.6),
-                inset 0 0 0 1px rgba(255,255,255,0.05),
-                inset 0 2px 20px rgba(255,255,255,0.02);
+                inset 0 1px 0 0 rgba(255,255,255,0.1),
+                inset 0 0 20px rgba(0,0,0,0.2); /* Inner depth */
             text-align: left;
             position: relative;
             overflow: hidden;
@@ -253,18 +269,28 @@
             opacity: 0.04;
             pointer-events: none;
             mix-blend-mode: overlay;
+            z-index: 1;
         }
 
-        /* Glossy shine effect on cards */
+        /* Gradient Border Glare */
         .glass-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: var(--card-radius);
+            padding: 1px;
+            background: radial-gradient(
+                600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                rgba(255, 255, 255, 0.4),
+                transparent 40%
+            );
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            pointer-events: none;
             z-index: 2;
+            opacity: 0.5;
+            transition: opacity 0.3s;
         }
 
         .glass-card h2 {
@@ -540,13 +566,15 @@
                 flex-direction: column;
                 justify-content: center;
                 align-items: center;
-                opacity: 0;
+
+                /* Circular Reveal Transition */
+                clip-path: circle(30px at calc(100% - 62px) calc(100% - 62px));
+                transition: clip-path 0.7s cubic-bezier(0.19, 1, 0.22, 1);
                 pointer-events: none;
-                transition: opacity 0.4s ease;
             }
 
             .mobile-menu-overlay.active {
-                opacity: 1;
+                clip-path: circle(150% at calc(100% - 62px) calc(100% - 62px));
                 pointer-events: auto;
             }
 
@@ -563,8 +591,8 @@
                 color: #fff;
                 text-decoration: none;
                 opacity: 0;
-                transform: translateY(20px);
-                transition: opacity 0.4s ease, transform 0.4s ease;
+                transform: translateY(30px);
+                transition: opacity 0.5s ease, transform 0.5s ease;
             }
 
             .mobile-menu-overlay.active .mobile-links a {
@@ -598,6 +626,12 @@
             .hero-text { font-size: 3.5rem; }
             .stat-number { font-size: 4rem; }
             .stats-grid { grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+
+            p { font-size: 1.1rem; line-height: 1.7; }
+            .feature-list li { padding-top: 0.5rem; padding-bottom: 0.5rem; } /* Better touch targets */
+
+            /* Fix nav overlap */
+            .nav-pill { display: none; }
         }
 
         /* Desktop Optimization */
@@ -651,28 +685,53 @@
 
             .nav-pill {
                 pointer-events: auto;
-                background: rgba(20, 20, 22, 0.4);
-                backdrop-filter: blur(15px) saturate(180%);
+                background: rgba(10, 10, 12, 0.6);
+                backdrop-filter: blur(25px) saturate(180%);
                 border: 1px solid rgba(255, 255, 255, 0.08);
                 padding: 0.8rem 2.5rem;
                 border-radius: 100px;
                 display: flex;
                 align-items: center;
                 gap: 4rem;
-                box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+                box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
                 transition: all 0.4s var(--ease-out-expo);
             }
 
             .nav-pill:hover {
-                background: rgba(20, 20, 22, 0.6);
-                box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+                background: rgba(20, 20, 22, 0.8);
+                box-shadow: 0 30px 70px -10px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15);
                 border-color: rgba(255,255,255,0.15);
+                transform: translateY(-2px);
             }
 
             .nav-logo { font-size: 1.1rem; }
-            .nav-links a { font-size: 0.8rem; font-weight: 500; opacity: 0.7; transition: opacity 0.3s ease, transform 0.3s ease; }
-            .nav-links a:hover { opacity: 1; }
-            .nav-links a::after { bottom: -8px; }
+            .nav-links a { font-size: 0.8rem; font-weight: 500; opacity: 0.7; transition: all 0.3s ease; }
+            .nav-links a:hover, .nav-links a.active { opacity: 1; color: #fff; }
+            .nav-links a::after {
+                bottom: -8px;
+                box-shadow: 0 0 8px var(--accent-gold); /* Glow */
+            }
+            .nav-links a.active::after {
+                width: 100%;
+            }
+
+            /* Text Reveal Animation Styles */
+            .reveal-text {
+                overflow: hidden;
+                line-height: 1.2; /* Prevent clipping */
+            }
+
+            .reveal-text span {
+                display: block;
+                transform: translateY(110%);
+                opacity: 0;
+                transition: transform 1.2s var(--ease-out-expo), opacity 1.2s ease;
+            }
+
+            .reveal-text.visible span {
+                transform: translateY(0);
+                opacity: 1;
+            }
 
             /* Asymmetric & Grid Layouts */
             #bends .content-block,
@@ -774,7 +833,7 @@
 
     <!-- Hero Section -->
     <section id="hero" data-mode="hero">
-        <h1 class="hero-text">Kolli Hills.</h1>
+        <h1 class="hero-text reveal-text"><span>Kolli Hills.</span></h1>
         <p class="hero-sub">The 'Mountain of Death', Reborn as a Sanctuary.</p>
         <p class="hero-description">
             Ascend 1,300 meters (4,265 ft) into a realm guarded by the ethereal maiden deity <strong>Kollipavai</strong> ("The Maiden who Kills").
@@ -887,7 +946,7 @@
     <!-- The Temple -->
     <section id="temple" data-mode="temple">
         <div class="content-block glass-card">
-            <h2>Arapaleeswarar Temple</h2>
+            <h2 class="reveal-text"><span>Arapaleeswarar Temple</span></h2>
             <p>
                 In a world of constant noise, we found something incredibly rare: Silence.
                 The <strong>Arapaleeswarar Temple</strong> isn't just a structure; it's a testament to permanence.
@@ -928,7 +987,7 @@
     <!-- Siddhar Caves -->
     <section id="caves" data-mode="caves">
         <div class="content-block glass-card">
-            <h2>Siddhar Caves</h2>
+            <h2 class="reveal-text"><span>Siddhar Caves</span></h2>
             <p>
                 This isn't just a hike; it's a pilgrimage into the earth.
                 Sages like <strong>Pampatti Siddhar</strong>, <strong>Korakka Siddhar</strong>, and the father of Siddha medicine, <strong>Agasthiar</strong>, chose these narrow crevices for their deep meditation, harnessing the hill's medicinal energy.
@@ -971,7 +1030,7 @@
     <!-- The Waterfall -->
     <section id="waterfall" data-mode="waterfall">
         <div class="content-block">
-            <h2 class="hero-text" style="font-size: 4rem;">Agaya Gangai</h2>
+            <h2 class="hero-text reveal-text" style="font-size: 4rem;"><span>Agaya Gangai</span></h2>
             <p class="hero-sub">The 'Ganges of the Sky'.</p>
             <p class="waterfall-text">
                 Fed by the jungle stream <strong>Panchanathi</strong> (River of Five) which eventually joins the Aiyar River, this 300-foot cascade is a raw display of nature's power.
@@ -1034,7 +1093,7 @@
     <!-- Tampcol Medicinal Farm -->
     <section id="farm" data-mode="farm">
         <div class="content-block">
-             <h2 class="hero-text text-gradient-green">TAMPCOL Farm</h2>
+             <h2 class="hero-text text-gradient-green reveal-text"><span>TAMPCOL Farm</span></h2>
              <p class="hero-sub">Healing from the earth.</p>
              <p class="bends-text">
                 Established in 1983, this sanctuary run by the Tamil Nadu Medical Plant Farms & Herbal Medicine Corporation is a living library of <strong>Siddha, Ayurveda, and Unani</strong> medicine.
@@ -1068,7 +1127,7 @@
     <!-- Botanical Garden -->
     <section id="garden" data-mode="garden">
         <div class="content-block glass-card">
-            <h2>Botanical Garden</h2>
+            <h2 class="reveal-text"><span>Botanical Garden</span></h2>
             <p>
                 Located in Semmedu, this is where wild nature meets curated beauty.
                 Featuring a magnificent <strong>Rose Garden</strong> with hundreds of hybrid varieties that bloom in colors you didn't know existed, set against the backdrop of the misty hills.
@@ -1118,7 +1177,7 @@
     <!-- Vasalurpatty Boat House -->
     <section id="boathouse" data-mode="boathouse">
         <div class="content-block">
-            <h2 class="hero-text text-gradient-blue">Vasalurpatty</h2>
+            <h2 class="hero-text text-gradient-blue reveal-text"><span>Vasalurpatty</span></h2>
             <div class="stat-label">Boat House</div>
             <p class="bends-text">
                 A pristine artificial lake bordered by gentle hillocks and towering eucalyptus groves. Created by a check dam, the water here is a mirror for the sky, offering a rare moment of stillness in your journey.
@@ -1299,8 +1358,9 @@
 
         function updateCursor() {
             if(follower) {
-                posX += (mouseX - posX) / 9;
-                posY += (mouseY - posY) / 9;
+                // Smoother, slightly faster lag for "world-class" feel
+                posX += (mouseX - posX) * 0.12;
+                posY += (mouseY - posY) * 0.12;
                 follower.style.left = posX + 'px';
                 follower.style.top = posY + 'px';
             }
@@ -1435,6 +1495,7 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     currentMode = entry.target.dataset.mode;
+                    updateActiveNav(currentMode);
                 }
             });
         }, observerOptions);
@@ -1442,6 +1503,27 @@
         sections.forEach(section => {
             observer.observe(section);
         });
+
+        function updateActiveNav(mode) {
+             const links = document.querySelectorAll('.nav-links a');
+             links.forEach(link => {
+                 link.classList.remove('active');
+                 if (link.getAttribute('href') === `#${mode}`) {
+                     link.classList.add('active');
+                 }
+             });
+        }
+
+        // --- Text Reveal Animation ---
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+
+        document.querySelectorAll('.reveal-text').forEach(el => revealObserver.observe(el));
 
         // --- Visuals: The Road & Particles ---
 
@@ -1589,6 +1671,10 @@
                     const x = e.clientX - rect.left;
                     const y = e.clientY - rect.top;
 
+                    // Update CSS variables for glare effect
+                    card.style.setProperty('--mouse-x', `${x}px`);
+                    card.style.setProperty('--mouse-y', `${y}px`);
+
                     const centerX = rect.width / 2;
                     const centerY = rect.height / 2;
 
@@ -1600,6 +1686,7 @@
 
                 card.addEventListener('mouseleave', () => {
                     card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+                    // Reset glare to center or fade out via opacity (handled in CSS)
                 });
             });
         }
